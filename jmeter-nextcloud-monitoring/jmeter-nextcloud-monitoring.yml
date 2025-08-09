@@ -1,0 +1,69 @@
+networks:
+  nextcloud-monitoring:
+    driver: bridge
+
+volumes:
+  nextcloud_influxdb_data:
+  nextcloud_grafana_data:
+
+services:
+  # InfluxDB - Base de données pour métriques JMeter
+  influxdb:
+    image: influxdb:1.8-alpine
+    container_name: nextcloud-influxdb
+    networks:
+      - nextcloud-monitoring
+    ports:
+      - "8088:8086"  # Port différent pour éviter conflits
+      - "2005:2003"   # Port différent pour éviter conflits
+    volumes:
+      - nextcloud_influxdb_data:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=jmeter
+      - INFLUXDB_USER=jmeter
+      - INFLUXDB_USER_PASSWORD=jmeter123
+      - INFLUXDB_ADMIN_USER=à definir
+      - INFLUXDB_ADMIN_PASSWORD=à definir
+    restart: unless-stopped
+
+  # Grafana - Dashboards et visualisation
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nextcloud-grafana
+    networks:
+      - nextcloud-monitoring
+    ports:
+      - "3003:3000"  # Port différent pour éviter conflits
+    volumes:
+      - nextcloud_grafana_data:/var/lib/grafana
+      # - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      # - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=à définir
+      - GF_USERS_ALLOW_SIGN_UP=false
+      # - GF_INSTALL_PLUGINS=grafana-influxdb-datasource
+    depends_on:
+      - influxdb
+        # condition: service_healthy
+    restart: unless-stopped
+
+  # Optionnel : Nextcloud pour les tests (si pas déjà déployé)
+#   nextcloud:
+#     image: nextcloud:latest
+#     container_name: nextcloud-app
+#     networks:
+#       - nextcloud-monitoring
+#     ports:
+#       - "8081:80"
+#     environment:
+#       - NEXTCLOUD_ADMIN_USER=admin
+#       - NEXTCLOUD_ADMIN_PASSWORD=admin123
+#       - NEXTCLOUD_TRUSTED_DOMAINS=localhost
+#     volumes:
+#       - nextcloud_data:/var/www/html
+#     restart: unless-stopped
+#     profiles:
+#       - testing  # Utiliser docker-compose --profile testing up pour l'inclure
+
+# volumes:
+#   nextcloud_data:
