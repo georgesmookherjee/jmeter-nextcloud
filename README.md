@@ -57,14 +57,13 @@ docker-compose -f jmeter-nextcloud-monitoring.yml up -d
 5. **Déconnexion** (`/logout`)
 
 ### Patterns de charge
-- **Test de charge** : 1-15 utilisateurs simultanés
+- **Test de charge** : 10 ou 15 utilisateurs simultanés
 - **Durée** : 9 minutes par test
 
 ## 📈 Résultats clés
 
 ### Capacité identifiée
 - **Utilisateurs simultanés supportés** : ~15 VU
-- **Point de saturation** : ~18-20 VU  
 - **Temps de réponse acceptable** : < 4s (sous 15 VU)
 - **Taux d'erreur** : 0% (dans la zone verte)
 
@@ -95,10 +94,10 @@ docker-compose -f jmeter-nextcloud-monitoring.yml up -d
 ├── jmeter-nextcloud/
 ├── jmeter-nextcloud-monitoring/
 │   └── jmeter-nextcloud-monitoring.yml     # Stack monitoring  
-├── jmeter-nextcloud-monitoring/
+├── jmeter-nextcloud-application/
 │   ├── nextcloud.yml                       # Stack application
-├── screenshots des résultats/
-│   └── screenshots/                        # Captures Grafana
+├── resutls/
+│   └── Screensots et présentation          # Captures Grafana
 └── README.md
 │   rapport-performance.md                  # Analyse détaillée
 │   jmeter-nextcloud-v4.jmx                 # Script de test principal
